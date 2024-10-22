@@ -1,20 +1,58 @@
 ---
-- name: Create VM from Vcenter Template
-  hosts: localhost
-  connection: local
-  gather_facts: false
+- name: Create VM from Template
+  hosts: build
   tasks:
-    - name: Clone Template to New Virtual Machine
-      community.vmware.vmware_guest:
-        validate_certs: false
-        name: "{{ vm_name }}"
-        template: # Input vCenter Template
-        datacenter: # Input vCenter Datacenter
-        resource_pool: # Input Resource Pool
-        folder: "/"
-        state: poweredon
-        wait_for_ip_address: true
+    - name: Install python3-pip
+      ansible.builtin.apt:
+        name: python3-pip
+        state: present
+      become: yes
+      
+    - name: Install setuptools module via pip
+      ansible.builtin.pip:
+        name: setuptools
+        state: present
 
+    - name: Install requests module via pip
+      ansible.builtin.pip:
+        name: requests
+        state: present
+
+    - name: Install proxmoxer module via pip
+      ansible.builtin.pip:
+        name: proxmoxer
+        state: present
+
+    - name: Clone proxmox template
+      community.general.proxmox_kvm:
+        node: unzy
+        api_user: "root@pam"
+        api_password: "{{ proxmox_pass }}"
+        api_host: 192.168.1.200
+        api_port: 8006
+        storage: "local-lvm"
+        full: true
+        clone: "VM-via-Ansible"
+        name: "{{ vm_name }}"
+
+    - name: wait 10s
+      ansible.builtin.pause:
+        seconds: 10
+
+    - name: Start VM
+      community.general.proxmox_kvm:
+        node: unzy
+        api_user: "root@pam"
+        api_password: "{{ proxmox_pass }}"
+        api_host: 192.168.1.200
+        api_port: 8006
+        name: "{{ vm_name }}"
+        state: started
+
+     - name: wait 30s
+       ansible.builtin.pause:
+         seconds: 30
+    
 - name: Set VM IP and Hostname
   hosts: 172.16.1.200 # This is the IP that is set for the template, if you use a different IP update here.
   tasks:
