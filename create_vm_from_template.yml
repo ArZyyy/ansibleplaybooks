@@ -1,0 +1,21 @@
+- name: Create VM from Debian template on Proxmox
+  hosts: localhost
+  tasks:
+    - name: Clone VM from template
+      community.general.proxmox_kvm:
+        api_host: "dc-proxmox-01.cedre.univ-amu.fr"  # Adresse du serveur Proxmox
+        api_user: "root@pam"                         # Utilisateur Proxmox avec accès API
+        api_password: "mohdait2si"           # Mot de passe de l'utilisateur
+        node: "dc-proxmox-01"                        # Nom du nœud
+        clone: "9999"                                # ID du template (DEBIAN-TEMPLATE)
+        vmid: 123                                    # ID unique pour la nouvelle VM
+        name: "new-debian-vm"                        # Nom de la nouvelle VM
+        memory: 6144                                 # RAM (6 Go)
+        cores: 4                                     # Nombre de cœurs
+        sockets: 1                                   # Nombre de sockets
+        onboot: yes                                  # Démarrer la VM au boot
+        bootdisk: "scsi0"                            # Disque de démarrage
+        scsi0: "ZFS-RAIDZ2:64G"                      # Disque avec 64 Go sur le stockage ZFS-RAIDZ2
+        net0: "virtio,bridge=vmbr0,firewall=1"       # Interface réseau
+        timeout: 300
+      delegate_to: localhost
