@@ -9,7 +9,7 @@
 
     - name: Install curl
       apt:
-        name: curl
+        name: 
         state: present
 
     
