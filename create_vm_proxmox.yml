@@ -3,7 +3,7 @@
   hosts: unzy.home
   tasks:
     - name: Install python3-pip
-      ansible.builtin.yum:
+      ansible.builtin.apt:
         name: python3-pip
         state: present
       become: yes
@@ -65,12 +65,12 @@
     - name: Update IP
       ansible.builtin.lineinfile:
         path: /etc/sysconfig/network-scripts/ifcfg-ens18
-        regex: "IPADDR=172.16.1.200"
-        line: "IPADDR={{ new_IP }}"
+        regex: "IPADDR=192.168.1.199"
+        #line: "IPADDR={{ new_IP }}"
 
     - name: Update Hostname
       ansible.builtin.hostname:
-        name: "{{ hostname }}.dragon.local"
+        name: "{{ hostname }}.home"
 
     - name: Reboot
       ansible.builtin.command: "init 6"
