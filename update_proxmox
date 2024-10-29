@@ -1,0 +1,8 @@
+---
+- name: Update package list on dc-proxmox-01
+  hosts: dc-proxmox-01.cedre.univ-amu.fr
+  become: true  # Utilise sudo pour exécuter les commandes en tant qu'administrateur
+  tasks:
+    - name: Update apt package list
+      apt:
+        update_cache: yes
