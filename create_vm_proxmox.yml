@@ -3,23 +3,23 @@
   hosts: unzy.home
   tasks:
     - name: Install python3-pip
-      ansible.builtin.apt:
+      apt:
         name: python3-pip
         state: present
       become: yes
 
     - name: Install setuptools module via pip
-      ansible.builtin.pip:
+      pip:
         name: setuptools
         state: present
 
     - name: Install requests module via pip
-      ansible.builtin.pip:
+      pip:
         name: requests
         state: present
 
     - name: Install proxmoxer module via pip
-      ansible.builtin.pip:
+      pip:
         name: proxmoxer
         state: present
 
@@ -39,13 +39,13 @@
         #name: "{{ vm_name }}"
 
     - name: wait 10 seconds
-      ansible.builtin.pause:
+      pause:
         seconds: 10
 
     - name: Start VM
       community.general.proxmox_kvm:
         node: unzy
-        pi_user: "root@pam"
+        api_user: "root@pam"
         api_password: "AcDc1204@"
         #api_password: "{{ proxmox_pass }}"
         api_host: "192.168.1.200"
@@ -56,26 +56,26 @@
         state: started
 
     - name: wait 20 seconds
-      ansible.builtin.pause:
+      pause:
         seconds: 20
 
 - name: Set VM IP and Hostname
   hosts: 192.168.1.199
   tasks:
     - name: Update IP
-      ansible.builtin.lineinfile:
+      lineinfile:
         path: /etc/sysconfig/network-scripts/ifcfg-ens18
         regex: "IPADDR=192.168.1.199"
-        #line: "IPADDR={{ new_IP }}"
+        line: "IPADDR={{ new_IP }}"
 
     - name: Update Hostname
-      ansible.builtin.hostname:
+      hostname:
         name: "{{ hostname }}.home"
 
     - name: Reboot
-      ansible.builtin.command: "init 6"
+      command: "init 6"
       ignore_errors: true
 
     - name: Pause for 30 seconds to wait for reboot
-      ansible.builtin.pause:
-        seconds: "10"
+      pause:
+        seconds: 10
