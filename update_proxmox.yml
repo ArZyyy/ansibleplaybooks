@@ -6,3 +6,10 @@
     - name: Update apt package list
       apt:
         update_cache: yes
+
+    - name: Install curl
+      apt:
+        name: curl
+        state: present
+
+    
