@@ -1,6 +1,6 @@
 ---
 - name: Update package list on dc-proxmox-01
-  hosts: dc-proxmox-01.cedre.univ-amu.fr
+  hosts: unzy.home
   become: true  # Utilise sudo pour exécuter les commandes en tant qu'administrateur
   tasks:
     - name: Update apt package list
@@ -9,7 +9,7 @@
 
     - name: Install curl
       apt:
-        name: 
+        name: curl
         state: present
 
     
